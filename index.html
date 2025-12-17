@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innomedio | Digital Agency for Web Development & Online Marketing</title>
+    
+    <!-- Google Fonts: Urbanist (Loading all weights for design flexibility) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        innomedio: {
+                            primary: '#F9B800',
+                            light: '#FAD100',
+                            black: '#050505',
+                            darkgray: '#111111',
+                            gray: '#1A1A1A'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Urbanist', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'marquee': 'marquee 25s linear infinite',
+                        'pulse-glow': 'pulse-glow 3s infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 0 0px rgba(249, 184, 0, 0.2)' },
+                            '50%': { boxShadow: '0 0 0 20px rgba(249, 184, 0, 0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Urbanist', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor */
+        }
+
+        /* Ensure font applies to form elements and buttons specifically */
+        input, button, select, textarea, text {
+            font-family: 'Urbanist', sans-serif;
+        }
+
+        /* 1. Grain Overlay for Film Look */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* 2. Custom Cursor */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            will-change: transform;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: #F9B800; }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(249, 184, 0, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        body.hovering .cursor-outline {
+            width: 70px; height: 70px;
+            background-color: rgba(249, 184, 0, 0.05);
+            border-color: #F9B800;
+            mix-blend-mode: difference;
+        }
+
+        /* --- BACKGROUND GRID (Novation Style) --- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-size: 100px 100px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* --- PRELOADER (Glue.be Style) --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F9B800;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        #preloader.hide {
+            transform: translateY(-100%);
+        }
+        .loader-content {
+            font-size: 5rem;
+            font-weight: 900;
+            color: black;
+            overflow: hidden;
+        }
+        .loader-text {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: slideUp 0.5s forwards 0.2s;
+        }
+        @keyframes slideUp { to { transform: translateY(0); } }
+
+        /* --- TYPOGRAPHY --- */
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff 0%, #F9B800 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+            display: inline-block;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+        
+        .heading-huge {
+            font-size: clamp(3rem, 10vw, 9rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            font-weight: 900;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-magnetic { transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1); }
+        .btn-primary {
+            background: #F9B800; color: black;
+            position: relative; overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-primary::after {
+            content: ''; position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0;
+            transform: scale(0); transition: 0.4s;
+            border-radius: 100%;
+        }
+        .btn-primary:hover::after { opacity: 0.2; transform: scale(2); }
+
+        /* --- STICKY CARDS EFFECT (AWWWARDS STYLE) --- */
+        .sticky-card-container {
+            position: relative;
+        }
+        .sticky-card {
+            position: sticky;
+            top: 100px;
+            margin-bottom: 4rem; /* Spacing between stacked cards */
+            transform-origin: center top;
+            transition: transform 0.5s ease;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+        }
+        
+        /* --- MARQUEE --- */
+        .marquee-container { overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; animation: marquee 30s linear infinite; }
+        
+        /* --- HORIZONTAL SCROLL SECTION --- */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- ACCORDION --- */
+        .accordion-content { transition: max-height 0.3s ease-out; max-height: 0; overflow: hidden; }
+
+        /* Glass Nav */
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-innomedio-primary selection:text-black overflow-hidden" onload="document.body.classList.remove('overflow-hidden')">
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="loader-content">
+            <span class="loader-text font-black">INNOMEDIO.</span>
+        </div>
+    </div>
+
+    <!-- Grain & Grid -->
+    <div class="grain-overlay"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Cursor -->
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+
+    <!-- FLOATING BADGE -->
+    <a href="#contact" class="fixed bottom-8 right-8 z-40 hidden md:flex items-center justify-center w-32 h-32 hover:scale-110 transition-transform duration-300">
+        <div class="relative w-full h-full flex items-center justify-center">
+            <!-- Text Circle -->
+            <svg viewBox="0 0 100 100" class="w-full h-full absolute inset-0 animate-spin-slow">
+                <defs>
+                    <path id="circle" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"/>
+                </defs>
+                <text font-size="11" font-weight="bold" fill="#F9B800" letter-spacing="1.5" font-family="'Urbanist', sans-serif">
+                    <textPath xlink:href="#circle">Let's Work Together • Start Project •</textPath>
+                </text>
+            </svg>
+            <!-- Center Dot -->
+            <div class="w-12 h-12 bg-innomedio-primary rounded-full flex items-center justify-center text-black">
+                <i class="fas fa-arrow-right -rotate-45"></i>
+            </div>
+        </div>
+    </a>
+
+    <!-- 1. HEADER / NAVBAR -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6 border-b border-white/5">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3 z-50 hover-trigger group">
+                <img src="Innomedio Logo-01.jpg" alt="INNOMEDIO" class="h-10 w-auto object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-500" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <div class="hidden flex items-center gap-2">
+                    <div class="w-10 h-10 bg-innomedio-primary rounded flex items-center justify-center text-black font-black text-xl">I</div>
+                    <span class="tracking-[0.2em] font-bold text-lg">INNOMEDIO</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-12">
+                <a href="#cases" class="text-sm font-bold uppercase tracking-widest hover:text-innomedio-primary transition hover-trigger">Cases</a>
+                <a href="#services" class="text-sm font-bold uppercase tracking-widest hover:text-innomedio-primary transition hover-trigger">Services</a>
+                <a href="#method" class="text-sm font-bold uppercase tracking-widest hover:text-innomedio-primary transition hover-trigger">Method</a>
+                <a href="#contact" class="btn-primary px-8 py-3 rounded-full font-bold text-sm hover-trigger btn-magnetic shadow-[0_0_20px_rgba(249,184,0,0.3)]">
+                    Start Project
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden text-white z-50 p-2">
+                <div class="w-8 h-0.5 bg-white mb-2"></div>
+                <div class="w-5 h-0.5 bg-innomedio-primary ml-auto"></div>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-black z-40 transform translate-x-full transition-transform duration-500 flex flex-col justify-center items-center gap-10">
+            <button id="close-menu-btn" class="absolute top-8 right-8 text-white text-4xl">&times;</button>
+            <a href="#cases" class="text-4xl font-black uppercase hover:text-innomedio-primary" onclick="toggleMenu()">Cases</a>
+            <a href="#services" class="text-4xl font-black uppercase hover:text-innomedio-primary" onclick="toggleMenu()">Services</a>
+            <a href="#method" class="text-4xl font-black uppercase hover:text-innomedio-primary" onclick="toggleMenu()">Method</a>
+            <a href="#contact" class="text-4xl font-black uppercase text-innomedio-primary" onclick="toggleMenu()">Start Project</a>
+        </div>
+    </nav>
+
+    <!-- 1. HERO SECTION -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Abstract Video-Like Background -->
+        <div class="absolute inset-0 z-0">
+             <div class="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-innomedio-primary/10 rounded-full blur-[100px] animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-[30vw] h-[30vw] bg-purple-900/10 rounded-full blur-[80px]"></div>
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" class="w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Abstract Texture">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/50 to-black"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10 text-center flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 border border-white/10 bg-white/5 backdrop-blur-md px-5 py-2 rounded-full mb-8 animate-float" data-aos="fade-down">
+                <span class="w-2 h-2 rounded-full bg-innomedio-primary animate-pulse-glow"></span>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase text-white/80">Digital Agency Since 2012</span>
+            </div>
+            
+            <h1 class="heading-huge mb-6 text-white">
+                <div class="block" data-aos="fade-up" data-aos-delay="100">WE CREATE</div>
+                <div class="block text-gradient" data-aos="fade-up" data-aos-delay="300">DIGITAL IMPACT</div>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed" data-aos="fade-up" data-aos-delay="500">
+               Innomedio helps companies with all marketing aspects. Strategy, Branding, Development & Growth.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 items-center" data-aos="fade-up" data-aos-delay="600">
+                <a href="#contact" class="btn-primary px-10 py-5 rounded-full font-bold text-lg min-w-[220px] hover-trigger btn-magnetic flex items-center justify-center gap-3 group">
+                    Get a Quote <i class="fas fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform"></i>
+                </a>
+                <a href="#cases" class="px-10 py-5 rounded-full border border-white/20 font-bold text-lg min-w-[220px] hover:bg-white/5 hover:border-innomedio-primary hover:text-innomedio-primary transition-all hover-trigger btn-magnetic flex items-center justify-center gap-3 group">
+                    <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-innomedio-primary group-hover:text-black transition-colors"><i class="fas fa-play text-xs ml-0.5"></i></span>
+                    View Work
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll Down Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
+            <span class="text-[10px] uppercase tracking-widest">Scroll</span>
+            <div class="w-[1px] h-12 bg-gradient-to-b from-innomedio-primary to-transparent"></div>
+        </div>
+    </header>
+
+    <!-- INFINITE MARQUEE -->
+    <div class="bg-innomedio-primary py-4 border-y border-black overflow-hidden rotate-1 scale-105 z-20 relative">
+        <div class="marquee-container">
+            <div class="marquee-content text-black font-black text-2xl uppercase tracking-tighter">
+                Strategy <span class="mx-6 text-xl">•</span> Branding <span class="mx-6 text-xl">•</span> Web Development <span class="mx-6 text-xl">•</span> E-Commerce <span class="mx-6 text-xl">•</span> Online Marketing <span class="mx-6 text-xl">•</span> SEO & SEA <span class="mx-6 text-xl">•</span> Content Creation <span class="mx-6 text-xl">•</span>
+                Strategy <span class="mx-6 text-xl">•</span> Branding <span class="mx-6 text-xl">•</span> Web Development <span class="mx-6 text-xl">•</span> E-Commerce <span class="mx-6 text-xl">•</span> Online Marketing <span class="mx-6 text-xl">•</span> SEO & SEA <span class="mx-6 text-xl">•</span> Content Creation <span class="mx-6 text-xl">•</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MOST RECENT CASE STUDIES (Sticky Card Stack) -->
+    <section id="cases" class="py-32 bg-transparent relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="mb-24 flex flex-col md:flex-row justify-between items-end">
+                <div>
+                    <h2 class="text-innomedio-primary text-xs font-bold tracking-[0.3em] uppercase mb-4">Selected Work</h2>
+                    <h3 class="text-5xl md:text-7xl font-bold">Recent Cases</h3>
+                </div>
+                <div class="hidden md:block">
+                     <div class="text-right text-sm text-gray-500 mb-2">Scroll to explore</div>
+                     <div class="w-full h-[1px] bg-white/20"></div>
+                </div>
+            </div>
+
+            <div class="sticky-card-container space-y-20 pb-20">
+                <!-- Card 1 -->
+                <div class="sticky-card bg-[#111] rounded-[2.5rem] overflow-hidden border border-white/5 group hover:border-innomedio-primary/30 transition-colors h-[80vh] flex flex-col md:flex-row hover-trigger">
+                    <div class="md:w-1/2 p-10 md:p-16 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="px-4 py-1 rounded-full border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-300">Development</span>
+                                <span class="px-4 py-1 rounded-full border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-300">Branding</span>
+                            </div>
+                            <h4 class="text-5xl md:text-6xl font-bold mb-6 text-white group-hover:text-innomedio-primary transition-colors">HERCO</h4>
+                            <p class="text-xl text-gray-400 leading-relaxed max-w-md">
+                                A complete digital transformation resulting in a user-friendly and attractive end product. We redefined their online presence from the ground up.
+                            </p>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-4 text-lg font-bold group/link mt-10">
+                            View Case Study <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/link:bg-innomedio-primary group-hover/link:text-black transition-all"><i class="fas fa-arrow-right -rotate-45 group-hover/link:rotate-0 transition-transform"></i></span>
+                        </a>
+                    </div>
+                    <div class="md:w-1/2 h-full relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Herco">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="sticky-card bg-[#161616] rounded-[2.5rem] overflow-hidden border border-white/5 group hover:border-innomedio-primary/30 transition-colors h-[80vh] flex flex-col md:flex-row hover-trigger top-[120px]">
+                    <div class="md:w-1/2 p-10 md:p-16 flex flex-col justify-between">
+                        <div>
+                             <div class="flex items-center gap-3 mb-6">
+                                <span class="px-4 py-1 rounded-full border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-300">Strategy</span>
+                                <span class="px-4 py-1 rounded-full border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-300">Marketing</span>
+                            </div>
+                            <h4 class="text-5xl md:text-6xl font-bold mb-6 text-white group-hover:text-innomedio-primary transition-colors">M.I.P.</h4>
+                            <p class="text-xl text-gray-400 leading-relaxed max-w-md">
+                                Increasing sales month after month through targeted online marketing campaigns and a data-driven strategy overhaul.
+                            </p>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-4 text-lg font-bold group/link mt-10">
+                            View Case Study <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/link:bg-innomedio-primary group-hover/link:text-black transition-all"><i class="fas fa-arrow-right -rotate-45 group-hover/link:rotate-0 transition-transform"></i></span>
+                        </a>
+                    </div>
+                    <div class="md:w-1/2 h-full relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="MIP">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="sticky-card bg-[#1A1A1A] rounded-[2.5rem] overflow-hidden border border-white/5 group hover:border-innomedio-primary/30 transition-colors h-[80vh] flex flex-col md:flex-row hover-trigger top-[140px]">
+                    <div class="md:w-1/2 p-10 md:p-16 flex flex-col justify-between">
+                        <div>
+                             <div class="flex items-center gap-3 mb-6">
+                                <span class="px-4 py-1 rounded-full border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-300">E-Commerce</span>
+                                <span class="px-4 py-1 rounded-full border border-white/10 text-xs font-bold uppercase tracking-wider text-gray-300">UI/UX</span>
+                            </div>
+                            <h4 class="text-5xl md:text-6xl font-bold mb-6 text-white group-hover:text-innomedio-primary transition-colors">HILFRA</h4>
+                            <p class="text-xl text-gray-400 leading-relaxed max-w-md">
+                                Building a professional webshop that drives consistent revenue growth with a focus on seamless user experience.
+                            </p>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-4 text-lg font-bold group/link mt-10">
+                            View Case Study <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/link:bg-innomedio-primary group-hover/link:text-black transition-all"><i class="fas fa-arrow-right -rotate-45 group-hover/link:rotate-0 transition-transform"></i></span>
+                        </a>
+                    </div>
+                    <div class="md:w-1/2 h-full relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Hilfra">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. CLIENT LOGOS (NO SLIDER) -->
+    <section class="py-20 border-y border-white/5 relative z-10">
+        <div class="container mx-auto px-6">
+            <h3 class="text-center text-lg font-bold text-gray-500 w-full tracking-[0.3em] uppercase mb-12">TRUSTED BY</h3>
+            <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                 <!-- Using typography hierarchy to simulate logos -->
+                 <span class="text-2xl font-black hover:text-white cursor-default tracking-tight">HEVADEX</span>
+                 <span class="text-2xl font-bold hover:text-white cursor-default tracking-widest">ATLAS</span>
+                 <span class="text-2xl font-medium hover:text-white cursor-default italic">OXYGEN</span>
+                 <span class="text-2xl font-black hover:text-white cursor-default uppercase">D&L CONCEPTS</span>
+                 <span class="text-2xl font-bold hover:text-white cursor-default tracking-tighter">IFACTO</span>
+                 <span class="text-2xl font-light hover:text-white cursor-default tracking-[0.2em]">IN-LEASE</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SERVICES -->
+    <section id="services" class="py-32 relative z-10">
+        <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row gap-16 mb-24">
+                <div class="md:w-1/3">
+                    <h2 class="text-innomedio-primary text-xs font-bold tracking-[0.3em] uppercase mb-4">What We Do</h2>
+                    <h3 class="text-5xl font-bold leading-tight">Total Digital<br>Solutions.</h3>
+                </div>
+                <div class="md:w-2/3 flex items-end">
+                    <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">
+                        We don't just build websites; we build businesses. From the first strategic brainstorm to the final marketing campaign, we are your end-to-end digital partner.
+                    </p>
+                </div>
+             </div>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <!-- Strategy -->
+                 <div class="group bg-[#111] p-10 rounded-3xl border border-white/5 hover:bg-white hover:scale-[1.02] transition-all duration-500 hover-trigger">
+                     <div class="mb-12 relative">
+                         <div class="w-16 h-16 bg-innomedio-primary/20 rounded-2xl flex items-center justify-center text-innomedio-primary group-hover:bg-innomedio-primary group-hover:text-black transition-colors">
+                             <i class="fas fa-chess-knight text-2xl"></i>
+                         </div>
+                     </div>
+                     <h4 class="text-2xl font-bold mb-6 group-hover:text-black transition-colors">Strategy</h4>
+                     <ul class="space-y-4 text-base font-medium text-gray-400 group-hover:text-gray-800 transition-colors">
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Digital Strategy</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Employer Branding</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Content Creation</li>
+                     </ul>
+                 </div>
+
+                 <!-- Branding -->
+                 <div class="group bg-[#111] p-10 rounded-3xl border border-white/5 hover:bg-white hover:scale-[1.02] transition-all duration-500 hover-trigger">
+                     <div class="mb-12 relative">
+                         <div class="w-16 h-16 bg-innomedio-primary/20 rounded-2xl flex items-center justify-center text-innomedio-primary group-hover:bg-innomedio-primary group-hover:text-black transition-colors">
+                             <i class="fas fa-paint-brush text-2xl"></i>
+                         </div>
+                     </div>
+                     <h4 class="text-2xl font-bold mb-6 group-hover:text-black transition-colors">Branding</h4>
+                     <ul class="space-y-4 text-base font-medium text-gray-400 group-hover:text-gray-800 transition-colors">
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Logo & Identity</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Videography</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Photography</li>
+                     </ul>
+                 </div>
+
+                 <!-- Development -->
+                 <div class="group bg-[#111] p-10 rounded-3xl border border-white/5 hover:bg-white hover:scale-[1.02] transition-all duration-500 hover-trigger">
+                     <div class="mb-12 relative">
+                         <div class="w-16 h-16 bg-innomedio-primary/20 rounded-2xl flex items-center justify-center text-innomedio-primary group-hover:bg-innomedio-primary group-hover:text-black transition-colors">
+                             <i class="fas fa-code text-2xl"></i>
+                         </div>
+                     </div>
+                     <h4 class="text-2xl font-bold mb-6 group-hover:text-black transition-colors">Development</h4>
+                     <ul class="space-y-4 text-base font-medium text-gray-400 group-hover:text-gray-800 transition-colors">
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Websites (Sulu)</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> E-commerce</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Web Apps</li>
+                     </ul>
+                 </div>
+
+                 <!-- Marketing -->
+                 <div class="group bg-[#111] p-10 rounded-3xl border border-white/5 hover:bg-white hover:scale-[1.02] transition-all duration-500 hover-trigger">
+                     <div class="mb-12 relative">
+                         <div class="w-16 h-16 bg-innomedio-primary/20 rounded-2xl flex items-center justify-center text-innomedio-primary group-hover:bg-innomedio-primary group-hover:text-black transition-colors">
+                             <i class="fas fa-bullhorn text-2xl"></i>
+                         </div>
+                     </div>
+                     <h4 class="text-2xl font-bold mb-6 group-hover:text-black transition-colors">Marketing</h4>
+                     <ul class="space-y-4 text-base font-medium text-gray-400 group-hover:text-gray-800 transition-colors">
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> SEO & SEA</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Social Media</li>
+                         <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-innomedio-primary rounded-full"></div> Lead Gen</li>
+                     </ul>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+    <!-- 5. WHY INNOMEDIO -->
+    <section class="bg-white text-black relative z-10">
+        <div class="flex flex-col lg:flex-row h-full lg:h-screen">
+            <div class="lg:w-1/2 relative h-[50vh] lg:h-auto overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Team">
+                <div class="absolute inset-0 bg-innomedio-primary/20 mix-blend-multiply"></div>
+            </div>
+            <div class="lg:w-1/2 p-12 lg:p-24 flex flex-col justify-center">
+                <h2 class="text-xs font-bold tracking-[0.3em] uppercase mb-6 text-gray-500">Why Us</h2>
+                <h3 class="text-5xl lg:text-7xl font-black mb-10 leading-[0.9]">KEMPEN<br>POWER.</h3>
+                
+                <p class="text-xl mb-12 text-gray-700 leading-relaxed max-w-lg">
+                    Small enough to care, big enough to scale. We speak fluent "hands-on". No nonsense, just hard work and transparent communication.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div>
+                        <div class="text-4xl font-bold text-innomedio-primary mb-2">10+</div>
+                        <p class="font-bold">Digital Natives</p>
+                        <p class="text-sm text-gray-500">Passionate experts.</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-innomedio-primary mb-2">13+</div>
+                        <p class="font-bold">Years Experience</p>
+                        <p class="text-sm text-gray-500">Since 2012.</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-innomedio-primary mb-2">100%</div>
+                        <p class="font-bold">Transparent</p>
+                        <p class="text-sm text-gray-500">No hidden fees.</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-innomedio-primary mb-2">360°</div>
+                        <p class="font-bold">Full Service</p>
+                        <p class="text-sm text-gray-500">All-in-one partner.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. WORKING METHOD (HORIZONTAL SCROLL) -->
+    <section id="method" class="py-32 bg-transparent overflow-hidden relative z-10">
+        <div class="container mx-auto px-6 mb-16">
+            <h2 class="text-innomedio-primary text-xs font-bold tracking-[0.3em] uppercase mb-4">The Process</h2>
+            <h3 class="text-5xl font-bold">How We Work</h3>
+        </div>
+
+        <!-- Scroll Container -->
+        <div class="flex overflow-x-auto hide-scrollbar pb-10 px-6 gap-6 md:gap-10 snap-x snap-mandatory">
+            <div class="min-w-[85vw] md:min-w-[400px] snap-center bg-[#111] p-10 rounded-3xl border border-white/5 relative group hover:border-innomedio-primary transition-colors">
+                <span class="text-8xl font-black text-white/5 absolute top-4 right-6 group-hover:text-innomedio-primary/10 transition-colors">01</span>
+                <h4 class="text-3xl font-bold mb-4 mt-8">Discover</h4>
+                <p class="text-gray-400 text-lg">We dive deep into your business. Analysis of goals, target audience, and current performance.</p>
+            </div>
+            
+            <div class="min-w-[85vw] md:min-w-[400px] snap-center bg-[#111] p-10 rounded-3xl border border-white/5 relative group hover:border-innomedio-primary transition-colors">
+                <span class="text-8xl font-black text-white/5 absolute top-4 right-6 group-hover:text-innomedio-primary/10 transition-colors">02</span>
+                <h4 class="text-3xl font-bold mb-4 mt-8">Define</h4>
+                <p class="text-gray-400 text-lg">Creating a strategic roadmap and technical specifications. No surprises later.</p>
+            </div>
+
+            <div class="min-w-[85vw] md:min-w-[400px] snap-center bg-[#111] p-10 rounded-3xl border border-white/5 relative group hover:border-innomedio-primary transition-colors">
+                <span class="text-8xl font-black text-white/5 absolute top-4 right-6 group-hover:text-innomedio-primary/10 transition-colors">03</span>
+                <h4 class="text-3xl font-bold mb-4 mt-8">Design</h4>
+                <p class="text-gray-400 text-lg">Visuals that capture your brand identity perfectly. UI/UX focus for conversion.</p>
+            </div>
+
+            <div class="min-w-[85vw] md:min-w-[400px] snap-center bg-[#111] p-10 rounded-3xl border border-white/5 relative group hover:border-innomedio-primary transition-colors">
+                <span class="text-8xl font-black text-white/5 absolute top-4 right-6 group-hover:text-innomedio-primary/10 transition-colors">04</span>
+                <h4 class="text-3xl font-bold mb-4 mt-8">Develop</h4>
+                <p class="text-gray-400 text-lg">Coding robust, scalable solutions using the latest tech stacks like Sulu and React.</p>
+            </div>
+
+            <div class="min-w-[85vw] md:min-w-[400px] snap-center bg-[#111] p-10 rounded-3xl border border-white/5 relative group hover:border-innomedio-primary transition-colors">
+                <span class="text-8xl font-black text-white/5 absolute top-4 right-6 group-hover:text-innomedio-primary/10 transition-colors">05</span>
+                <h4 class="text-3xl font-bold mb-4 mt-8">Grow</h4>
+                <p class="text-gray-400 text-lg">Launch is just the start. We optimize and market your platform for maximum ROI.</p>
+            </div>
+            
+            <div class="min-w-[10vw]"></div>
+        </div>
+    </section>
+
+    <!-- 7. TECH LOGOS -->
+    <section class="py-16 bg-white border-y border-gray-100 relative z-10">
+         <div class="container mx-auto px-6 text-center mb-8">
+             <h3 class="text-black font-bold tracking-widest text-sm uppercase">Powered By</h3>
+         </div>
+         <div class="marquee-container opacity-60 grayscale">
+            <div class="marquee-content text-4xl text-black flex items-center gap-16 font-black">
+                 <i class="fab fa-google"></i> 
+                 <i class="fab fa-facebook"></i> 
+                 <i class="fab fa-instagram"></i> 
+                 <i class="fab fa-linkedin"></i> 
+                 <i class="fab fa-pinterest"></i>
+                 <span>SULU</span> 
+                 <span>Leadinfo</span> 
+                 <span>DeepL</span>
+                 <i class="fab fa-google"></i> 
+                 <i class="fab fa-facebook"></i> 
+                 <i class="fab fa-instagram"></i> 
+                 <i class="fab fa-linkedin"></i> 
+                 <i class="fab fa-pinterest"></i>
+                 <span>SULU</span> 
+                 <span>Leadinfo</span> 
+                 <span>DeepL</span>
+            </div>
+         </div>
+    </section>
+
+    <!-- 8. NEWS -->
+    <section id="news" class="py-32 bg-innomedio-darkgray relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-16">
+                <h3 class="text-4xl font-bold">Insights</h3>
+                <a href="#" class="text-innomedio-primary hover:text-white transition-colors border-b border-innomedio-primary pb-1">Read All</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                 <article class="group cursor-pointer hover-trigger">
+                     <div class="overflow-hidden rounded-2xl mb-6">
+                         <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-110" alt="News">
+                     </div>
+                     <div class="text-xs font-bold text-innomedio-primary mb-2 uppercase">Business</div>
+                     <h4 class="text-2xl font-bold mb-3 group-hover:text-innomedio-primary transition-colors">KMO-portefeuille abolished in 2026?</h4>
+                     <p class="text-gray-400 line-clamp-2">What you need to know about the upcoming subsidy changes.</p>
+                 </article>
+
+                 <article class="group cursor-pointer hover-trigger">
+                     <div class="overflow-hidden rounded-2xl mb-6">
+                         <img src="https://images.unsplash.com/photo-1571786256017-aee7a0c009b6?q=80&w=2080&auto=format&fit=crop" class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-110" alt="News">
+                     </div>
+                     <div class="text-xs font-bold text-innomedio-primary mb-2 uppercase">SEO</div>
+                     <h4 class="text-2xl font-bold mb-3 group-hover:text-innomedio-primary transition-colors">GEO vs SEO: The Future of Search</h4>
+                     <p class="text-gray-400 line-clamp-2">Will Generative Engine Optimization replace traditional SEO?</p>
+                 </article>
+
+                 <article class="group cursor-pointer hover-trigger">
+                     <div class="overflow-hidden rounded-2xl mb-6">
+                         <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-110" alt="News">
+                     </div>
+                     <div class="text-xs font-bold text-innomedio-primary mb-2 uppercase">Ads</div>
+                     <h4 class="text-2xl font-bold mb-3 group-hover:text-innomedio-primary transition-colors">Performance Max 2025 Updates</h4>
+                     <p class="text-gray-400 line-clamp-2">More control and better targeting features arriving soon.</p>
+                 </article>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 9. FAQ -->
+    <section class="py-24 bg-black border-t border-white/5 relative z-10">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <h3 class="text-3xl font-bold mb-10 text-center">Frequently Asked Questions</h3>
+            
+            <div class="space-y-4">
+                <!-- Item 1 -->
+                <div class="border border-white/10 rounded-lg bg-[#0A0A0A] overflow-hidden transition hover:border-white/30">
+                    <button class="w-full px-8 py-5 text-left font-bold flex justify-between items-center focus:outline-none hover:text-innomedio-primary transition" onclick="toggleAccordion(1)">
+                        <span>Do you work with the KMO-portefeuille?</span>
+                        <i id="icon-1" class="fas fa-plus text-innomedio-primary transition-transform"></i>
+                    </button>
+                    <div id="content-1" class="max-h-0 overflow-hidden accordion-content bg-white/5">
+                        <p class="px-8 py-6 text-gray-400 text-sm leading-relaxed">Yes, we are a registered service provider. This allows you to benefit from subsidies for your strategic advice and training projects until the changes in 2026 take effect.</p>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="border border-white/10 rounded-lg bg-[#0A0A0A] overflow-hidden transition hover:border-white/30">
+                    <button class="w-full px-8 py-5 text-left font-bold flex justify-between items-center focus:outline-none hover:text-innomedio-primary transition" onclick="toggleAccordion(2)">
+                        <span>How long does a website project take?</span>
+                        <i id="icon-2" class="fas fa-plus text-innomedio-primary transition-transform"></i>
+                    </button>
+                    <div id="content-2" class="max-h-0 overflow-hidden accordion-content bg-white/5">
+                        <p class="px-8 py-6 text-gray-400 text-sm leading-relaxed">Depending on the scope and complexity, a typical website project takes between 8 to 12 weeks from strategy to launch.</p>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="border border-white/10 rounded-lg bg-[#0A0A0A] overflow-hidden transition hover:border-white/30">
+                    <button class="w-full px-8 py-5 text-left font-bold flex justify-between items-center focus:outline-none hover:text-innomedio-primary transition" onclick="toggleAccordion(3)">
+                        <span>Can you help with existing websites?</span>
+                        <i id="icon-3" class="fas fa-plus text-innomedio-primary transition-transform"></i>
+                    </button>
+                    <div id="content-3" class="max-h-0 overflow-hidden accordion-content bg-white/5">
+                        <p class="px-8 py-6 text-gray-400 text-sm leading-relaxed">Absolutely. We can perform a technical audit of your current site and propose improvements, or take over maintenance if the technology stack aligns with our expertise (e.g., Sulu, Laravel, WordPress).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. CTA BANNER / CONFIGURATOR -->
+    <section id="contact" class="py-32 bg-innomedio-primary relative overflow-hidden z-10">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="lg:w-1/2">
+                    <h2 class="text-black text-6xl md:text-8xl font-black leading-none mb-8">LET'S<br>TALK<br>GROWTH.</h2>
+                    <p class="text-black/80 text-xl font-medium mb-10 max-w-md">
+                        Ready to transform your digital presence? Start a conversation with us today.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-black text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl hover-trigger">
+                            Book Meeting
+                        </button>
+                        <button class="border-2 border-black text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-black hover:text-white transition hover-trigger">
+                            Call Us: +32 14 55 66 77
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- "Project Configurator" Interface Mockup -->
+                <div class="lg:w-1/2 w-full">
+                    <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <div class="mb-6 border-b border-gray-100 pb-4 flex justify-between items-end">
+                            <div>
+                                <h4 class="font-bold text-black text-2xl mb-1">Project Estimator</h4>
+                                <p class="text-gray-500 text-sm">Tell us about your needs.</p>
+                            </div>
+                            <i class="fas fa-sliders-h text-innomedio-primary text-xl"></i>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <!-- Service Selection -->
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">I need help with...</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <!-- Pre-selected Visual State for Web Development -->
+                                    <span class="px-4 py-2 bg-innomedio-primary text-black rounded-lg text-sm font-bold cursor-pointer hover:opacity-80 transition shadow-md">Web Development</span>
+                                    <span class="px-4 py-2 border border-gray-200 text-gray-500 rounded-lg text-sm font-bold cursor-pointer hover:border-black hover:text-black transition">Marketing</span>
+                                    <span class="px-4 py-2 border border-gray-200 text-gray-500 rounded-lg text-sm font-bold cursor-pointer hover:border-black hover:text-black transition">Strategy</span>
+                                </div>
+                            </div>
+
+                            <!-- Budget Range -->
+                            <div>
+                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Estimated Budget</label>
+                                 <div class="h-2 bg-gray-100 rounded-full overflow-hidden relative cursor-pointer group">
+                                     <div class="h-full w-1/2 bg-black absolute top-0 left-0"></div>
+                                     <div class="w-4 h-4 bg-innomedio-primary rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 border-white shadow transition-transform group-hover:scale-125"></div>
+                                 </div>
+                                 <div class="flex justify-between text-xs font-bold mt-2 text-black">
+                                     <span>€5k</span>
+                                     <span>€50k+</span>
+                                 </div>
+                            </div>
+                            
+                            <button class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition flex justify-center items-center gap-2 group">
+                                Request Quote <i class="fas fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. FOOTER -->
+    <footer class="bg-black text-white pt-32 pb-12 border-t border-white/10 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row justify-between gap-20 mb-20">
+                <div class="lg:w-1/3">
+                    <a href="#" class="text-4xl font-black tracking-tighter block mb-8">INNOMEDIO.</a>
+                    <p class="text-gray-500 text-lg mb-8 max-w-sm">
+                        Digital agency for web development & online marketing. We create digital impact that lasts.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                
+                <div class="lg:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-10">
+                    <div>
+                        <h4 class="font-bold mb-6 text-white/50">Menu</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Home</a></li>
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Cases</a></li>
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Services</a></li>
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                         <h4 class="font-bold mb-6 text-white/50">Services</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Strategy</a></li>
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Branding</a></li>
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Development</a></li>
+                            <li><a href="#" class="hover:text-innomedio-primary transition-colors">Marketing</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-span-2">
+                        <h4 class="font-bold mb-6 text-white/50">Partners</h4>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-3 py-1 bg-[#1A1A1A] border border-white/10 rounded text-sm font-bold flex items-center gap-2">
+                                <i class="fab fa-google text-innomedio-primary"></i> Google Partner
+                            </span>
+                            <span class="px-3 py-1 bg-[#1A1A1A] border border-white/10 rounded text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-certificate text-innomedio-primary"></i> Sulu Certified
+                            </span>
+                            <span class="px-3 py-1 bg-[#1A1A1A] border border-white/10 rounded text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-check-circle text-innomedio-primary"></i> Leadinfo
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-600 text-sm">
+                <p>&copy; 2025 Innomedio. All rights reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white">Privacy</a>
+                    <a href="#" class="hover:text-white">Terms</a>
+                    <a href="#" class="hover:text-white">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hide');
+            }, 1500); // 1.5s delay to show off animation
+        });
+
+        // Mobile Menu
+        function toggleMenu() {
+            document.getElementById('mobile-menu').classList.toggle('translate-x-full');
+        }
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
+        document.getElementById('close-menu-btn').addEventListener('click', toggleMenu);
+
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if(window.scrollY > 50) {
+                nav.classList.add('glass-nav');
+                nav.classList.remove('py-6');
+                nav.classList.add('py-4');
+            } else {
+                nav.classList.remove('glass-nav');
+                nav.classList.add('py-6');
+                nav.classList.remove('py-4');
+            }
+        });
+
+        // Custom Cursor
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            dot.style.left = `${e.clientX}px`;
+            dot.style.top = `${e.clientY}px`;
+            
+            outline.animate({
+                left: `${e.clientX}px`,
+                top: `${e.clientY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        document.querySelectorAll('.hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+        
+        // Magnetic Buttons
+        document.querySelectorAll('.btn-magnetic').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width/2;
+                const y = e.clientY - rect.top - rect.height/2;
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0, 0)';
+            });
+        });
+
+        // Accordion Logic
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                icon.classList.remove('rotate-45');
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.classList.add('rotate-45');
+            }
+        }
+    </script>
+</body>
+</html>
